@@ -4,10 +4,10 @@ import numpy as np
 #-------------------------------------------VALUES-------------------------------------
 xm = 1
 T = 1e-5
-A = 0.05
+A = 0.5
 one_period = 1e-4
 all_time = 3e-4
-df = 1 / (150 * T)
+df = 1 / (50 * T)
 dt = 0.000001
 num_of_points = all_time / dt
 w0 = 47500
@@ -65,29 +65,36 @@ def reverse_furie_trans(input_signal, frequencies, t):
 #---------------------------------FOURIER_TRANSFORMATION-------------------------------
 
 
-
 #--------------------------------------OUR_PROGRAM-------------------------------------
-t = np.zeros((int)(num_of_points))
+t = np.zeros(int(num_of_points))
 
 for i in range(int(num_of_points)):
     t[i] = i * dt
 
 x = signal(t)
-plt.plot(t, x, color = 'blue')
 
-f = np.zeros(10000)
+graph1 = plt.figure()
+plt.plot(t, x, label = 'Input signal', color = 'blue')
 
-for i in range(10000):
+f = np.zeros(int(num_of_points))
+
+for i in range(int(num_of_points)):
     f[i] = i * df
 
 furie_f = furie_trans(x, f, t)
 
-for i in range(10000):
+graph2 = plt.figure()
+plt.plot(f, np.real(furie_f), color = 'green')
+
+for i in range(int(num_of_points)):
     furie_f[i] = furie_f[i] * K_real(f[i])
 
 reverse_furie_signal = reverse_furie_trans(furie_f, f, t)
 
-plt.plot(t, reverse_furie_signal, color = 'red')
+plt.plot(f, furie_f, color = 'black')
+
+plt.figure(graph1)
+plt.plot(t, reverse_furie_signal, label = 'Output signal', color = 'red')
 #--------------------------------------OUR_PROGRAM-------------------------------------
 
 # plt.xlim(0, 3e-4)
@@ -100,4 +107,16 @@ plt.ylabel('Signal')
 
 
 plt.grid()
+plt.legend()
+
+plt.figure(graph2)
+
+plt.xlim(-40000, 500000)
+plt.title('Spectrum signal')
+plt.xlabel('Frequency')
+plt.ylabel('Signal decomposition')
+
+plt.grid()
+plt.legend()
+
 plt.show()
